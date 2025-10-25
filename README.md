@@ -34,7 +34,8 @@ cd k8s_local_installation
 - ip: IP address of the current node. Eg: 192.168.3.7
 
 ### For Worker node
-> The control-plane node must be up and running at this step.
+#### The control-plane node must be up and running at this step.
+
 Clone this source code on your cluster's node.
 ```bash
 git clone https://github.com/LightFinder84/k8s_local_installation.git
