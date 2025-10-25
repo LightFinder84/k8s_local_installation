@@ -31,6 +31,7 @@ cd k8s_local_installation
 ./master_setup.sh hostname ip
 ```
 > hostname: your desired hostname for the control-plane node. Eg: master
+
 > ip: IP address of the current node. Eg: 192.168.3.7
 
 ### For Worker node
@@ -45,6 +46,7 @@ cd k8s_local_installation
 ./worker_setup.sh hostname ip
 ```
 > hostname: your desired hostname for the worker node. Eg: worker01
+
 > ip: the IP address of the control-plane node
 
 
