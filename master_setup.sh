@@ -22,6 +22,12 @@ sudo modprobe br_netfilter
 sudo cp ./network.conf /etc/sysctl.d/k8s.conf
 sudo sysctl --system
 
+# install ssh
+sudo apt update
+sudo apt install -y openssh-server
+sudo systemctl start ssh
+sudo systemctl enable ssh
+
 # Install containerd
 sudo apt-get update && sudo apt-get install -y containerd
 
