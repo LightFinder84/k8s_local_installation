@@ -45,3 +45,7 @@ sudo apt-get update
 sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 sudo kubeadm config images pull
+
+# Enable dhcp for host only network
+sudo cp ./00-installer-config.yml /etc/netplan/00-installer-config.yml
+sudo netplan apply
