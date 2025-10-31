@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app-deployment # 1. Name of the Deployment
+  labels:
+    app: my-app
+spec:
+  replicas: 3 # 2. Desired number of identical pods
+  selector:
+    matchLabels:
+      app: my-app # 3. Selector to find the pods this Deployment manages
+  template: # 4. Pod template: defines the pods managed by the Deployment
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - name: my-app-container # 5. Name of the container
+        image: nginx:latest # 6. Container image to use
+        ports:
+        - containerPort: 80 # 7. Port the container exposes
+        resources: # 8. Resource requests and limits (optional but recommended)
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"

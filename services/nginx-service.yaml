@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-external-service
+spec:
+  # Crucial Link: Selects Pods with the label app: nginx
+  selector:
+    app: nginx
+  # Exposes the Service on a port of every Node's IP
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 80      # The port the Service itself listens on (internal cluster access)
+      targetPort: 80 # The port the NGINX container is listening on (containerPort from your Deployment)
+      # nodePort: <optional-port> # Kubernetes will assign a random one (30000-32767) if omitted
