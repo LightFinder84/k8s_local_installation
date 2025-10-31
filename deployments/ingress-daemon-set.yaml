@@ -1,0 +1,40 @@
+# ingress-daemonset.yaml
+# Note: This is an abbreviated manifest focusing on the key changes
+apiVersion: apps/v1
+kind: DaemonSet # Changed from Deployment
+metadata:
+  name: nginx-ingress-controller
+  namespace: ingress-nginx
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: ingress-nginx
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: ingress-nginx
+    spec:
+      # Crucial: Allows the Pod to use the host's network stack directly
+      hostNetwork: true 
+      # Important: Configure tolerations if you want it to run on the master node too
+      tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
+      containers:
+      - name: controller
+        image: registry.k8s.io/ingress-nginx/controller:v1.9.4
+        args:
+          - /nginx-ingress-controller
+          # Standard ingress arguments...
+        ports:
+          # Now binding directly to the host's ports 80 and 443
+          - name: http
+            containerPort: 80
+            hostPort: 80   # Binds to the Node's port 80
+            protocol: TCP
+          - name: https
+            containerPort: 443
+            hostPort: 443  # Binds to the Node's port 443
+            protocol: TCP
+        # ... (other standard container settings omitted for brevity)
