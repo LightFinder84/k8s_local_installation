@@ -1,5 +1,5 @@
-# $0: server IP
-sudo kubeadm init --apiserver-advertise-address=$1 --pod-network-cidr=10.244.0.0/16
+SERVER_IP=$1
+sudo kubeadm init --apiserver-advertise-address=${SERVER_IP} --pod-network-cidr=10.244.0.0/16
 
 # Generate join node token
 echo 'sudo ' | sudo tee ./token.sh
