@@ -47,7 +47,7 @@ sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 
 # JOIN NODE
-scp truong@${MASTER_NODE_IP}:/home/truong/setup/token.sh ./token.sh
+scp truong@${MASTER_NODE_IP}:/home/truong/k8s_local_installation/token.sh ./token.sh
 sudo sed -i 's/kubeadm/sudo kubeadm/g' token.sh
 chmod +x token.sh
 ./token.sh
