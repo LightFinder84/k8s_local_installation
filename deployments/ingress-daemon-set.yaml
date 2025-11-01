@@ -33,8 +33,4 @@ spec:
             containerPort: 80
             hostPort: 80   # Binds to the Node's port 80
             protocol: TCP
-          - name: https
-            containerPort: 443
-            hostPort: 443  # Binds to the Node's port 443
-            protocol: TCP
         # ... (other standard container settings omitted for brevity)

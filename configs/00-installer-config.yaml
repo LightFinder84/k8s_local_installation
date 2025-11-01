@@ -1,3 +1,4 @@
+# used for enable dhcp on Host-Only network adaptor
 network:
   ethernets:
     enp0s8:
