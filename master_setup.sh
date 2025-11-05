@@ -65,5 +65,10 @@ mkdir -p $HOME/.kube
 sudo cp -v /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
+# specify correct IP of current node
+sudo sed -i 's/KUBELET_EXTRA_ARGS=/KUBELET_EXTRA_ARGS="--node-ip='"${HOST_IP}"'"/g' /etc/default/kubelet
+sudo systemctl daemon-reload
+sudo systemctl restart kubelet
+
 # apply cni
 kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml

@@ -1,5 +1,6 @@
 HOST_NAME=$1
 MASTER_NODE_IP=$2
+NODE_IP=$3
 
 # Set hostname
 sudo hostnamectl hostname ${HOST_NAME}
@@ -51,6 +52,11 @@ echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.
 sudo apt-get update
 sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
+
+# specify correct IP of current node
+sudo sed -i 's/KUBELET_EXTRA_ARGS=/KUBELET_EXTRA_ARGS="--node-ip='"${NODE_IP}"'"/g' /etc/default/kubelet
+sudo systemctl daemon-reload
+sudo systemctl restart kubelet
 
 # JOIN NODE
 scp truong@${MASTER_NODE_IP}:/home/truong/k8s_local_installation/token.sh ./token.sh
