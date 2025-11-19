@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-0-external
+  namespace: kafka
+spec:
+  type: NodePort
+  ports:
+    - name: external-broker
+      port: 30092      # ClusterIP Service port (internal to K8s)
+      targetPort: 29092 # Port inside the Kafka Pod
+      nodePort: 30092  # **The port exposed on all K8s Nodes**
+  selector:
+    app: kafka
+    statefulset.kubernetes.io/pod-name: kafka-0 # Selects only the kafka-0 Pod
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-1-external
+  namespace: kafka
+spec:
+  type: NodePort
+  ports:
+    - name: external-broker
+      port: 30192      # ClusterIP Service port (internal to K8s)
+      targetPort: 29092 # Port inside the Kafka Pod
+      nodePort: 30192  # **The port exposed on all K8s Nodes**
+  selector:
+    app: kafka
+    statefulset.kubernetes.io/pod-name: kafka-1 # Selects only the kafka-1 Pod

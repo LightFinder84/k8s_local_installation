@@ -14,9 +14,9 @@ data:
   base.properties: |
     process.roles=broker,controller
     controller.listener.names=CONTROLLER
-    listeners=PLAINTEXT://:9092,CONTROLLER://:9093
-    listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL
-    inter.broker.listener.name=PLAINTEXT
+    listeners=INTERNAL://:9092,CONTROLLER://:9093,EXTERNAL://:29092
+    listener.security.protocol.map=EXTERNAL:PLAINTEXT,INTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL
+    inter.broker.listener.name=INTERNAL
     log.dirs=/var/lib/kafka/data
     controller.quorum.bootstrap.servers=kafka-0.kafka-service.kafka.svc.cluster.local:9093,kafka-1.kafka-service.kafka.svc.cluster.local:9093
     controller.quorum.voters=0@kafka-0.kafka-service.kafka.svc.cluster.local:9093,1@kafka-1.kafka-service.kafka.svc.cluster.local:9093
@@ -60,6 +60,11 @@ spec:
       containers:
         - name: kafka
           image: apache/kafka:latest
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
           command: ["sh", "-c"]
           args:
           - |
@@ -67,8 +72,14 @@ spec:
             NODE_ID="$(hostname | awk -F'-' '{print $2}')"
             CLUSTER_ID="uhaGgVSiR3W05yPkn_pKgw"
 
+            if [ "$NODE_ID" == "0" ]; then
+              EXTERNAL_PORT="30092"
+            elif [ "$NODE_ID" == "1" ]; then
+              EXTERNAL_PORT="30192"
+            fi
+
             echo "node.id=${NODE_ID}" >> /opt/kafka/config/server.properties
-            echo "advertised.listeners=PLAINTEXT://kafka-${NODE_ID}.kafka-service.kafka.svc.cluster.local:9092,CONTROLLER://kafka-${NODE_ID}.kafka-service.kafka.svc.cluster.local:9093" >> /opt/kafka/config/server.properties
+            echo "advertised.listeners=EXTERNAL://${NODE_IP}:${EXTERNAL_PORT},INTERNAL://kafka-${NODE_ID}.kafka-service.kafka.svc.cluster.local:9092,CONTROLLER://kafka-${NODE_ID}.kafka-service.kafka.svc.cluster.local:9093" >> /opt/kafka/config/server.properties
             cat /kafka/config/base.properties >> /opt/kafka/config/server.properties
 
             if [ ! -f /var/lib/kafka/data/meta.properties ]; then
@@ -77,7 +88,11 @@ spec:
             exec /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/server.properties
           ports:
             - containerPort: 9092
+              name: internal
             - containerPort: 9093
+              name: controller
+            - containerPort: 29092
+              name: external
           volumeMounts:
             - name: datadir
               mountPath: /var/lib/kafka/data
