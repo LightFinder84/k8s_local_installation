@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: etcd-nodeport-client
+  namespace: etcd # Must be in the same namespace as the etcd StatefulSet
+  labels:
+    app: etcd
+spec:
+  # Use NodePort to expose the service on a port on each node's IP
+  type: NodePort
+  
+  # Selects the pods created by the etcd StatefulSet
+  selector:
+    app: etcd
+  
+  ports:
+    # Port configuration for the etcd client API (where agents and server connect)
+    - name: client
+      protocol: TCP
+      port: 2379
+      targetPort: 2379
+      # You can optionally specify a fixed NodePort here (e.g., 30000-32767)
+      # If you omit this, K8s will automatically select one.
+      # nodePort: 30379 
