@@ -59,7 +59,7 @@ sudo systemctl daemon-reload
 sudo systemctl restart kubelet
 
 # JOIN NODE
-scp truong@${MASTER_NODE_IP}:/home/truong/k8s_local_installation/token.sh ./token.sh
+scp truong@${MASTER_NODE_IP}:/home/truong/k8s_local_installation/k8s/token.sh ./token.sh
 sudo sed -i 's/kubeadm/sudo kubeadm/g' token.sh
 chmod +x token.sh
 ./token.sh
