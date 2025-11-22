@@ -1,6 +1,44 @@
-HOST_NAME=$1
-MASTER_NODE_IP=$2
-NODE_IP=$3
+#!/bin/bash
+
+HOST_NAME="$1"
+MASTER_NODE_IP="$2"
+NODE_IP="$3"
+
+if [ -z "$HOST_NAME" ]; then
+    echo "❌ Error: Missing HOST_NAME argument."
+    echo "Usage: $0 <HOST_NAME> <MASTER_IP> <HOST_IP>"
+    exit 1
+fi
+
+if [ -z "$MASTER_NODE_IP" ]; then
+    echo "❌ Error: Missing MASTER_IP argument."
+    echo "Usage: $0 <HOST_NAME> <MASTER_IP> <HOST_IP>"
+    exit 1
+fi
+
+if [ -z "$HOST_IP" ]; then
+    echo "❌ Error: Missing HOST_IP argument."
+    echo "Usage: $0 <HOST_NAME> <MASTER_IP> <HOST_IP>"
+    exit 1
+fi
+
+echo "✅ Arguments successfully provided:"
+echo "   Host Name: $HOST_NAME"
+echo "   Master IP: $MASTER_NODE_IP"
+echo "   Host IP:   $HOST_IP"
+
+# Ask for confirmation
+echo -n "Do you wish to proceed with these settings? (yes/no): "
+read PROCEED
+
+# Check user input
+if [[ "$PROCEED" =~ ^[Yy][Ee]?[Ss]?$ ]]; then
+    echo "👍 User confirmed. Continuing script execution..."
+else
+    echo "🛑 Operation cancelled by user."
+    # Exit here to stop the script if the user cancels
+    exit 0
+fi
 
 # Set hostname
 sudo hostnamectl hostname ${HOST_NAME}
