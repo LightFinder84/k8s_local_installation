@@ -29,3 +29,19 @@ spec:
   selector:
     app: kafka
     statefulset.kubernetes.io/pod-name: kafka-1 # Selects only the kafka-1 Pod
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-2-external
+  namespace: kafka
+spec:
+  type: NodePort
+  ports:
+    - name: external-broker
+      port: 30292      # ClusterIP Service port (internal to K8s)
+      targetPort: 29092 # Port inside the Kafka Pod
+      nodePort: 30292  # **The port exposed on all K8s Nodes**
+  selector:
+    app: kafka
+    statefulset.kubernetes.io/pod-name: kafka-2 # Selects only the kafka-1 Pod
