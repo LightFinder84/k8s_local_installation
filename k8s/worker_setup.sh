@@ -6,26 +6,26 @@ NODE_IP="$3"
 
 if [ -z "$HOST_NAME" ]; then
     echo "❌ Error: Missing HOST_NAME argument."
-    echo "Usage: $0 <HOST_NAME> <MASTER_IP> <HOST_IP>"
+    echo "Usage: $0 <HOST_NAME> <MASTER_IP> <NODE_IP>"
     exit 1
 fi
 
 if [ -z "$MASTER_NODE_IP" ]; then
     echo "❌ Error: Missing MASTER_IP argument."
-    echo "Usage: $0 <HOST_NAME> <MASTER_IP> <HOST_IP>"
+    echo "Usage: $0 <HOST_NAME> <MASTER_IP> <NODE_IP>"
     exit 1
 fi
 
-if [ -z "$HOST_IP" ]; then
-    echo "❌ Error: Missing HOST_IP argument."
-    echo "Usage: $0 <HOST_NAME> <MASTER_IP> <HOST_IP>"
+if [ -z "$NODE_IP" ]; then
+    echo "❌ Error: Missing NODE_IP argument."
+    echo "Usage: $0 <HOST_NAME> <MASTER_IP> <NODE_IP>"
     exit 1
 fi
 
 echo "✅ Arguments successfully provided:"
 echo "   Host Name: $HOST_NAME"
 echo "   Master IP: $MASTER_NODE_IP"
-echo "   Host IP:   $HOST_IP"
+echo "   Host IP:   $NODE_IP"
 
 # Ask for confirmation
 echo -n "Do you wish to proceed with these settings? (yes/no): "
