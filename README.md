@@ -27,8 +27,8 @@ git clone https://github.com/LightFinder84/k8s_local_installation.git
 ```
 Run the commands below:
 ```bash
-cd k8s_local_installation
-./master_setup.sh hostname ip
+cd k8s_local_installation/k8s
+./master_setup.sh <hostname> <ip>
 ```
 - hostname: your desired hostname for the control-plane node. Eg: master
 - ip: IP address of the current node. Eg: 192.168.3.7
@@ -42,11 +42,12 @@ git clone https://github.com/LightFinder84/k8s_local_installation.git
 ```
 Run the commands below:
 ```bash
-cd k8s_local_installation
-./worker_setup.sh hostname ip
+cd k8s_local_installation/k8s
+./worker_setup.sh <hostname> <master-ip> <ip>
 ```
 - hostname: your desired hostname for the worker node. Eg: worker01
-- ip: the IP address of the control-plane node
+- master-ip: the IP address of the control-plain node
+- ip: the IP address of current node
 
 
 ### Check the result
