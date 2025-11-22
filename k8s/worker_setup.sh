@@ -3,29 +3,43 @@
 HOST_NAME="$1"
 MASTER_NODE_IP="$2"
 NODE_IP="$3"
+MASTER_USER="$4"
+KEYPAIR="$5"
 
 if [ -z "$HOST_NAME" ]; then
     echo "❌ Error: Missing HOST_NAME argument."
-    echo "Usage: $0 <HOST_NAME> <MASTER_IP> <NODE_IP>"
+    echo "Usage: $0 <HOST_NAME> <MASTER_IP> <NODE_IP> <MASTER_USER> [KEYPAIR_FILE]"
     exit 1
 fi
 
 if [ -z "$MASTER_NODE_IP" ]; then
     echo "❌ Error: Missing MASTER_IP argument."
-    echo "Usage: $0 <HOST_NAME> <MASTER_IP> <NODE_IP>"
+    echo "Usage: $0 <HOST_NAME> <MASTER_IP> <NODE_IP> <MASTER_USER> [KEYPAIR_FILE]"
     exit 1
 fi
 
 if [ -z "$NODE_IP" ]; then
     echo "❌ Error: Missing NODE_IP argument."
-    echo "Usage: $0 <HOST_NAME> <MASTER_IP> <NODE_IP>"
+    echo "Usage: $0 <HOST_NAME> <MASTER_IP> <NODE_IP> <MASTER_USER> [KEYPAIR_FILE]"
     exit 1
+fi
+
+if [ -z "$MASTER_USER" ]; then
+    echo "❌ Error: Missing MASTER_USER argument."
+    echo "Usage: $0 <HOST_NAME> <MASTER_IP> <NODE_IP> <MASTER_USER> [KEYPAIR_FILE]"
+    exit 1
+fi
+
+if [ -z "$KEYPAIR" ]; then
+    echo "KEYPAIR VALUE IS NOT SPECIFIED. USING PASSWORD AUTHENTICATION FOR MASTER SSH CONNECTION."
 fi
 
 echo "✅ Arguments successfully provided:"
 echo "   Host Name: $HOST_NAME"
 echo "   Master IP: $MASTER_NODE_IP"
 echo "   Host IP:   $NODE_IP"
+echo "   Master user:   $MASTER_USER"
+echo "   Keypair:   $KEYPAIR"
 
 # Ask for confirmation
 echo -n "Do you wish to proceed with these settings? (yes/no): "
@@ -97,7 +111,14 @@ sudo systemctl daemon-reload
 sudo systemctl restart kubelet
 
 # JOIN NODE
-scp truong@${MASTER_NODE_IP}:/home/truong/k8s_local_installation/k8s/token.sh ./token.sh
+if [ -z "$KEYPAIR" ]; then
+    # missing keypair
+    scp ${MASTER_USER}@${MASTER_NODE_IP}:/home/${MASTER_USER}/k8s_local_installation/k8s/token.sh ./token.sh
+else
+    # has keypair
+    scp -i ${KEYPAIR} ${MASTER_USER}@${MASTER_NODE_IP}:/home/${MASTER_USER}/k8s_local_installation/k8s/token.sh ./token.sh
+fi
+
 sudo sed -i 's/kubeadm/sudo kubeadm/g' token.sh
 chmod +x token.sh
 ./token.sh
