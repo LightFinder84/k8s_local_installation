@@ -30,7 +30,7 @@ metadata:
   namespace: etcd
 spec:
   serviceName: etcd-service
-  replicas: 1
+  replicas: 3
   podManagementPolicy: Parallel
   selector:
     matchLabels:
