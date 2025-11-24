@@ -1,8 +1,8 @@
 from confluent_kafka import Consumer, KafkaError
 
 conf = { 
-    'bootstrap.servers': 'kafka-0:9092,kafka-1:9092,kafka-2:9092',
-    'group-id': 'test-group',
+    'bootstrap.servers': 'worker-0:30092,worker-1:30192,worker-2:30292',
+    'group.id': 'test-group',
     'auto.offset.reset': 'earliest'
 }
 
@@ -16,7 +16,7 @@ try:
         if msg.error():
             print(f"Error: {msg.error()}")
             break
-    print(f"Received message: {msg.value().decode('utf-8')} from {msg.topic()} [{msg.partition()}] at offset {msg.offset()}")
+        print(f"Received message: {msg.value().decode('utf-8')} from {msg.topic()} [{msg.partition()}] at offset {msg.offset()}")
 except KeyboardInterrupt:
     print("Stopping consumer")
 finally:

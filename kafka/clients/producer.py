@@ -1,7 +1,7 @@
 from confluent_kafka import Producer
 
 conf = {
-    'bootstrap.servers': 'kafka-0:9092,kafka-1:9092'
+    'bootstrap.servers': 'worker-01:30092,worker-02:30192,worker-03:30292'
 }
 producer = Producer(conf)
 
@@ -13,7 +13,7 @@ def delivery_report(err, msg):
         
 for i in range(10):
     message = f'Hello Kafka {i}'
-    producer.produce('TEST_TOPIC', message.decode('utf-8'), callback=delivery_report)
+    producer.produce('TEST_TOPIC', message.encode('utf-8'), callback=delivery_report)
     producer.poll(0) # Trigger delivery callback
     
 producer.flush() # Wait for all messages to be delivered callback
