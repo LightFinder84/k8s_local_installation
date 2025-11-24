@@ -47,7 +47,7 @@ def initialize_configuration():
             with config_lock:
                 config_value = { 
                     "plugins": [],
-                    "available-plugins": [],
+                    "available-plugins": ["one", "two", "three"],
                     "node-id": NODE_HOSTNAME
                 }
                 print(f"Initial config value is not set. Proceeding with default value:\n{config_value}")
