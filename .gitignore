@@ -1,1 +1,3 @@
-venv
+etcd-client-venv
+grpc-client-venv
+kafka-client-venv
