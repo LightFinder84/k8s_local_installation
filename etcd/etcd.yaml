@@ -64,7 +64,7 @@ spec:
         - --listen-client-urls=http://0.0.0.0:2379
         - --advertise-client-urls=http://$(POD_NAME).etcd-service.etcd.svc.cluster.local:2379
         - --initial-advertise-peer-urls=http://$(POD_NAME).etcd-service.etcd.svc.cluster.local:2380
-        - --initial-cluster=etcd-0=http://etcd-0.etcd-service.etcd.svc.cluster.local:2380
+        - --initial-cluster=etcd-0=http://etcd-0.etcd-service.etcd.svc.cluster.local:2380,etcd-1=http://etcd-1.etcd-service.etcd.svc.cluster.local:2380,etcd-2=http://etcd-2.etcd-service.etcd.svc.cluster.local:2380
         - --initial-cluster-state=new
         - --initial-cluster-token=etcd-etcd
         - --listen-metrics-urls=http://0.0.0.0:8080
