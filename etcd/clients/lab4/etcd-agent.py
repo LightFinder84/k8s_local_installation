@@ -45,8 +45,12 @@ def initialize_configuration():
                 config_value = json.loads(result.decode('utf-8'))
         else:
             with config_lock:
-                print("Initial config value is not set. Using default value.")
-                config_value = { "plugins": [] }
+                config_value = { 
+                    "plugins": [],
+                    "available-plugins": []
+                }
+                print(f"Initial config value is not set. Proceeding with default value:\n{config_value}")
+                etcd.put(CONFIG_KEY, json.dumps(config_value).encode('utf-8'))
     except Exception as e:
         print(f"Error processing initial configuration value: {e}")
         

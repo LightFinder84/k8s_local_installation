@@ -16,7 +16,6 @@ except Exception:
     print(f"ETCD port must be a number")
     sys.exit(1)
     
-HEARTBEAT_PREFIX = '/monitor/heartbeat/'
 CONFIG_PREFIX = '/config/monitor/'
 
 try:
@@ -29,16 +28,18 @@ except Exception as e:
 # -------------------------------- Heartbeat --------------------------------
 
 def get_nodes_list():
-    results = etcd.get_prefix(HEARTBEAT_PREFIX)
+    results = etcd.get_prefix(CONFIG_PREFIX)
     nodes = [json.loads(result)['node-id'] for result, _ in results]
     return nodes
 
 def config_controller_main():
     print("\n--- Configuration Controller Active ---")
     print("Commands:")
-    print("    list    - List all currently active monitoring agents.")
-    print("    set <hostname> <interval> - Push a new interval setting on the agent.")
-    print("    quit    - Exit the application")
+    print("    hosts                        - List all currently active monitoring agents.")
+    print("    plugins <hostname>           - List plugins on an agent.")
+    print("    add <hostname> <plugin>      - Add plugin to agent.")
+    print("    remove <hostname> <plugin>   - Remove plugin from agent.")
+    print("    quit                         - Exit the application.")
     
     try:
         while True:
@@ -52,27 +53,57 @@ def config_controller_main():
             
             if action == 'quit':
                 break
-            elif action == 'list':
+            elif action == 'hosts':
                 nodes = get_nodes_list()
                 if nodes:
-                    print(f"Active Nodes: {', '.join(nodes)}")
+                    print("Active nodes:")
+                    for node in nodes:
+                        print(f"    {node}")
                 else:
                     print("No active nodes found.")
-            elif action == 'set':
-                node_id = parts[1]
-                try:
-                    interval = int(parts[2])
-                    config_key = CONFIG_PREFIX + node_id
-                    
-                    new_config = {}
-                    new_config['interval'] = interval
-                    
-                    etcd.put(config_key, json.dumps(new_config))
-                    
-                    print(f"Successfully sent new config to {node_id} at {config_key}. Interval set to {interval}s")
-                    print("(The agent's watcher should update immediately.)")
-                except ValueError:
-                    print("Error: Interval must be an integer.")
+            elif action == 'plugins':
+                hostname = parts[1]
+                # get config from host
+                config_key = CONFIG_PREFIX + hostname
+                result, _ = etcd.get(config_key)
+                if result:
+                    config_value = json.loads(result.value.decode('utf-8'))
+                    print(f"Running plugins: {config_value['plugins']}")
+                    print(f"Available plugins: {config_value['available-plugins']}")
+                else:
+                    print(f"Config not found for host {hostname}. Make sure the hostname is correct.")
+            elif action == 'add':
+                hostname = parts[1]
+                plugin = parts[2]
+                config_key = CONFIG_PREFIX + hostname
+                result, _ = etcd.get(config_key)
+                if result:
+                    config_value = json.loads(result.value.decode('utf-8'))
+                    if plugin not in config_value['available-plugins']:
+                        print(f"Plugin {plugin} is not available on agent {hostname}.")
+                    elif plugin in config_value['plugins']:
+                        print(f"Plugin {plugin} is already running on agent {hostname}.")
+                    else:
+                        print(f"Apllying plugin {plugin} on host {hostname}.")
+                        config_value['plugins'].append(plugin)
+                        etcd.put(config_key, json.dumps(config_value).encode('utf-8'))
+                else:
+                    print(f"Config not found for host {hostname}. Make sure the hostname is correct.")
+            elif action == 'remove':
+                hostname = parts[1]
+                plugin = parts[2]
+                config_key = CONFIG_PREFIX + hostname
+                result, _ = etcd.get(config_key)
+                if result:
+                    config_value = json.loads(result.value.decode('utf-8'))
+                    if plugin not in config_value['plugins']:
+                        print(f"Plugin {plugin} is not running on agent {hostname}.")
+                    else:
+                        print(f"Removing plugin {plugin} on host {hostname}.")
+                        config_value['plugins'].remove(plugin)
+                        etcd.put(config_key, json.dumps(config_value).encode('utf-8'))
+                else:
+                    print(f"Config not found for host {hostname}. Make sure the hostname is correct.")
             else:
                 print("Invalid command or fortmat. Use 'set <hostname> <interval>' or 'list'.")
             
