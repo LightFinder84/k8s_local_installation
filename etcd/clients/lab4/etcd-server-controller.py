@@ -95,7 +95,7 @@ def config_controller_main():
                 config_key = CONFIG_PREFIX + hostname
                 result, _ = etcd.get(config_key)
                 if result:
-                    config_value = json.loads(result.value.decode('utf-8'))
+                    config_value = json.loads(result.decode('utf-8'))
                     if plugin not in config_value['plugins']:
                         print(f"Plugin {plugin} is not running on agent {hostname}.")
                     else:
