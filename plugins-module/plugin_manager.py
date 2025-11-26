@@ -6,6 +6,7 @@ class PluginManager:
         self.plugins = []
         
     def update_plugins(self, plugins):
+        print(plugins)
         # add plugins
         for plugin_name in plugins:
             if plugin_name not in self.plugin_names:

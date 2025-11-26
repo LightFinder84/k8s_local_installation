@@ -14,6 +14,7 @@ class GrpcAgent:
         self.grpc_port = grpc_port
         self.monitor_data_queue = queue.Queue()
         self.command_response_queue = queue.Queue()
+        self.thread: threading.Thread = None
         
     def request_iterator_generator(self):
         while True:
@@ -69,5 +70,9 @@ class GrpcAgent:
                     print(e.details())
     
     def start_agent(self, etcd_agent):
-        thr = threading.Thread(target=self.run_client, args=[etcd_agent], daemon=True)
-        thr.start()
+        self.thread = threading.Thread(target=self.run_client, args=[etcd_agent], daemon=True)
+        self.thread.start()
+        
+    def finalize(self):
+        if self.thread:
+            self.thread.join(timeout=1)

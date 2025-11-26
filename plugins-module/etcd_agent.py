@@ -13,8 +13,14 @@ class EtcdAgent:
         self.config_value = {}
         self.config_lock = threading.Lock()
         
+        self.config_watcher_t: threading.Thread = None
+        
         self.establish_connection()
         self.initialize_configuration()
+        
+    def finalize(self):
+        if self.config_watcher_t:
+            self.config_watcher_t.join(timeout=1)
         
     def establish_connection(self):
         try:

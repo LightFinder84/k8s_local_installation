@@ -53,6 +53,10 @@ def main():
     except Exception as e:
         print(f"Exception occured: {e}")
         print(traceback.format_exc())
+    finally:
+        print("Shutting down agent application.")
+        etcd_agent.finalize()
+        grpc_agent.finalize()
         
 if __name__ == "__main__":
     main()
