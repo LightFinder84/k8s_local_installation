@@ -76,13 +76,13 @@ class EtcdAgent:
             return config_value
         
     def get_interval(self):
-        return self.config_value.interval
+        return self.config_value['interval']
     
     def get_plugins(self):
-        return self.config_value.plugins
+        return self.config_value['plugins']
     
     def get_metrics(self):
-        return self.config_value.metrics
+        return self.config_value['metrics']
     
     def get_available_plugins(self):
         return self.config_value['available-plugins']
