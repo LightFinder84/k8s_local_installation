@@ -37,22 +37,22 @@ class GrpcAgent:
         local_time_string = time.ctime(time.time())
         if 'cpu' in data:
             data_template =  monitoring_pb2.MonitorData(time=local_time_string, hostname=socket.gethostname(), metric="cpu", value=data['cpu'])
-            self.monitor_data_queue.put(data_template)
+            self.monitor_data_queue.put(monitoring_pb2.ClientStream(monitor_data=data_template))
         if 'mem' in data:
             data_template =  monitoring_pb2.MonitorData(time=local_time_string, hostname=socket.gethostname(), metric="mem", value=data['mem'])
-            self.monitor_data_queue.put(data_template)
+            self.monitor_data_queue.put(monitoring_pb2.ClientStream(monitor_data=data_template))
         if 'disk_read' in data:
             data_template =  monitoring_pb2.MonitorData(time=local_time_string, hostname=socket.gethostname(), metric="disk_read", value=data['disk_read'])
-            self.monitor_data_queue.put(data_template)
+            self.monitor_data_queue.put(monitoring_pb2.ClientStream(monitor_data=data_template))
         if 'disk_write' in data:
             data_template =  monitoring_pb2.MonitorData(time=local_time_string, hostname=socket.gethostname(), metric="disk_write", value=data['disk_write'])
-            self.monitor_data_queue.put(data_template)
+            self.monitor_data_queue.put(monitoring_pb2.ClientStream(monitor_data=data_template))
         if 'net_in' in data:
             data_template =  monitoring_pb2.MonitorData(time=local_time_string, hostname=socket.gethostname(), metric="net_in", value=data['net_in'])
-            self.monitor_data_queue.put(data_template)
+            self.monitor_data_queue.put(monitoring_pb2.ClientStream(monitor_data=data_template))
         if 'net_out' in data:
             data_template =  monitoring_pb2.MonitorData(time=local_time_string, hostname=socket.gethostname(), metric="net_out", value=data['net_out'])
-            self.monitor_data_queue.put(data_template)
+            self.monitor_data_queue.put(monitoring_pb2.ClientStream(monitor_data=data_template))
             
     def run_client(self, etcd_agent: EtcdAgent):
         with grpc.insecure_channel(f"{self.grpc_host}:{self.grpc_port}") as channel:
