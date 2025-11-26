@@ -1,4 +1,5 @@
 import sys
+import time
 import traceback
 from grpc_server import GrpcServer
 
@@ -14,6 +15,9 @@ def main():
     try:
         grpc_server = GrpcServer(GRPC_MAX_WORKERS)
         grpc_server.startServer()
+        
+        while True:
+            time.sleep(1)
         
     except Exception as e:
         print(f"Exception occured: {e}")
