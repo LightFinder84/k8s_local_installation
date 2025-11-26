@@ -53,6 +53,7 @@ class KafkaClient():
                 print(f"Error consuming data: {msg.error()}")
                 break
             print(f"Received message: {msg.key().decode('utf-8')} from {msg.topic()} [{msg.partition()}] at offset {msg.offset()}")
+            print(msg.value().decode('utf-8'))
             data = json.loads(msg.value().decode('utf-8'))
             command = self.analysis.run(data=data)
             if command:
