@@ -50,7 +50,7 @@ class KafkaClient():
             if msg.error():
                 print(f"Error consuming data: {msg.error()}")
                 break
-            print(f"Received message: {msg.value().decode('utf-8')} from {msg.topic()} [{msg.partition()}] at offset {msg.offset()}")
+            print(f"Received message: {msg.key().decode('utf-8')} from {msg.topic()} [{msg.partition()}] at offset {msg.offset()}")
     
     def finalize(self):
         self.producer.flush()
