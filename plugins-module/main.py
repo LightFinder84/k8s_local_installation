@@ -20,6 +20,11 @@ if len(sys.argv) != REQUIRED_ARGS:
     print(f"Usage: {sys.argv[0]} <ETCD_HOST> <ETCD_PORT> <GRPC_HOST> <GRPC_PORT>")
     sys.exit(1)
     
+ETCD_HOST = str(sys.argv[1])
+ETCD_PORT = int(sys.argv[2])
+GRPC_HOST = str(sys.argv[3])
+GRPC_PORT = int(sys.argv[4])
+    
 # ------------------------------------------ CODE ------------------------------------------
 
 def main():
