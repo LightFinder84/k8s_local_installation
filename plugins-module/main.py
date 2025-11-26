@@ -34,7 +34,7 @@ def main():
         etcd_agent.start_config_watcher()
         # connect to grpc
         grpc_agent = GrpcAgent(GRPC_HOST, GRPC_PORT)
-        grpc_agent.run_client(etcd_agent)
+        grpc_agent.start_agent(etcd_agent)
         
         data_collector = DataCollector()
         plugin_manager = PluginManager()

@@ -2,6 +2,7 @@ import time
 import queue
 import grpc
 import socket
+import threading
 from grpc_stub import monitoring_pb2, monitoring_pb2_grpc
 from etcd_agent import EtcdAgent
 
@@ -67,4 +68,6 @@ class GrpcAgent:
                     print(f"RPC failed: {e}")
                     print(e.details())
     
-    
+    def start_agent(self, etcd_agent):
+        thr = threading.Thread(target=self.run_client, args=[etcd_agent], daemon=True)
+        thr.start()
