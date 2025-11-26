@@ -8,7 +8,7 @@ REQUIRED_ARGS_COUNT = 1
 if len(sys.argv) != REQUIRED_ARGS_COUNT + 1:
     print(f"Incorrect argument. Usage: {sys.argv[0]} <GRPC_MAX_WORKERS>")
     
-GRPC_MAX_WORKERS = sys.argv[1]
+GRPC_MAX_WORKERS = int(sys.argv[1])
 
 def main():
     try:
