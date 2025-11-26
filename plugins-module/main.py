@@ -1,6 +1,7 @@
 import socket
 import sys
 import time
+import traceback
 from etcd_agent import EtcdAgent
 from collect import DataCollector
 from grpc_agent import GrpcAgent
@@ -8,10 +9,6 @@ from plugin_manager import PluginManager
 
 # ------------------------------------- CONFIGURATIONS -------------------------------------
 REQUIRED_ARGS = 5 # script_name host port
-ETCD_HOST = ""
-ETCD_PORT = 0
-GRPC_HOST = ""
-GRPC_PORT = 0
 NODE_HOSTNAME = socket.gethostname()
 CONFIG_KEY = f'/config/monitor/{NODE_HOSTNAME}'
 
@@ -55,6 +52,7 @@ def main():
             
     except Exception as e:
         print(f"Exception occured: {e}")
+        print(traceback.format_exc())
         
 if __name__ == "__main__":
     main()
