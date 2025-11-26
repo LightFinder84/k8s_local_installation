@@ -19,12 +19,6 @@ class MonitorService(monitoring_pb2_grpc.MonitorServicer):
                 command_type = monitoring_pb2.CommandRequest.CommandType.UNKNOWN
                 parameter = ""
                 
-                # CPU
-                if request.monitor_data.metric == "cpu" and float(request.monitor_data.value) >= CPU_THRESH_HOLD:
-                    command_type = monitoring_pb2.CommandRequest.CommandType.GET_PROCESS_LIST
-                    command_request = monitoring_pb2.CommandRequest(command_type=command_type, parameter=parameter)
-                    
-                
                 # send command
                 if command_request:
                     print("\n=================== SENDING COMMAND REQUEST ===========================")
