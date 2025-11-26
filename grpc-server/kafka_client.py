@@ -1,5 +1,5 @@
 import json
-from confluent_kafka import Producer
+from confluent_kafka import Producer, Consumer
 
 
 def read_json_file(filename):
@@ -28,6 +28,17 @@ class KafkaClient():
         self.produce_topic = produce_topic
         self.config = read_json_file(config_path)
         self.producer = Producer(self.config['producer'])
+        self.consumer = Consumer(self.config['consumer'])
+        
+    def consume(self):
+        while True:
+            msg = self.consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                print(f"Error consuming data: {msg.error()}")
+                break
+            print(f"Received command: {msg.key().decode('utf-8')} from {msg.topic()} [{msg.partition()}] at offset {msg.offset()}")
         
     def produce(self, data):
         print(f"Producing data")

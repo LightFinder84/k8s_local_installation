@@ -12,7 +12,7 @@ class MonitorService(monitoring_pb2_grpc.MonitorServicer):
     def monitor(self, request_iterator, context):
         for request in request_iterator:
             if request.HasField('monitor_data'):
-                print("\n=================== RECIEVE MONITOR DATA ==============================")
+                print("\n=== RECIEVE MONITOR DATA ===")
                 # print(f"Time: {request.monitor_data.time}")
                 # print(f"Hostname: {request.monitor_data.hostname}")
                 # print(f"Metric: {request.monitor_data.metric}")
@@ -27,7 +27,7 @@ class MonitorService(monitoring_pb2_grpc.MonitorServicer):
                 
                 # send command
                 if command_request:
-                    print("\n=================== SENDING COMMAND REQUEST ===========================")
+                    print("\n=== SENDING COMMAND REQUEST ===")
                     print(f"Target host: {request.monitor_data.hostname}")
                     print(f"Command type: {command_type}")
                     print(f"Parameter: {parameter}")
