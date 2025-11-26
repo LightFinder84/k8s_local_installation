@@ -2,13 +2,13 @@
 class Analysis():
     
     def run(self, data):
-        if 'cpu' in data and data['cpu'] > 50:
+        if data['metric'] == 'cpu' and data['value'] > 50:
             return {
                 "hostname": data['hostname'],
                 "command": 1,
                 "parameter": 10
             }
-        elif 'cpu' in data and data['cpu'] <= 50:
+        elif data['metric'] == 'cpu' and data['value'] <= 50:
             return {
                 "hostname": data['hostname'],
                 "command": 1,
