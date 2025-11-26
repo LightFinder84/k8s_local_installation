@@ -42,13 +42,13 @@ def main():
             metric_data = data_collector.execute(etcd_agent.get_metrics())
             
             # apply plugin
-            plugin_manager.update_plugins(etcd_agent.get_plugins)
+            plugin_manager.update_plugins(etcd_agent.get_plugins())
             plugin_manager.execute(metric_data)
             
             # send data
             grpc_agent.report(metric_data)
             
-            time.sleep(etcd_agent.get_interval) 
+            time.sleep(etcd_agent.get_interval()) 
             
     except Exception as e:
         print(f"Exception occured: {e}")
