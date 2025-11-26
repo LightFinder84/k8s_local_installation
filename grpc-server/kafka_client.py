@@ -37,7 +37,7 @@ class KafkaClient():
             "metric": data.metric,
             "value": data.value
         }
-        self.producer.produce(self.produce_topic, data.hostname, json.dumps(value).encode('utf-8'))
+        self.producer.produce(self.produce_topic, value=json.dumps(value).encode('utf-8'), key=data.hostname)
         self.producer.poll(0)
     
     def finalize(self):
