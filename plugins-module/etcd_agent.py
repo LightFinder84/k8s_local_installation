@@ -41,7 +41,7 @@ class EtcdAgent:
                 with self.config_lock:
                     self.config_value = {
                         "interval": 5,
-                        "metrics": [],
+                        "metrics": ['cpu', 'mem'],
                         "plugins": [],
                         "available-plugins": ["one", "two", "there"],
                         "node-id": socket.gethostname()
