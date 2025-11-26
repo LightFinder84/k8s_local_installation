@@ -5,16 +5,15 @@ class PluginManager:
         self.plugin_names = []
         self.plugins = []
         
-    def update_plugins(self, plugins):
-        print(plugins)
+    def update_plugins(self, plugin_list):
         # add plugins
-        for plugin_name in plugins:
+        for plugin_name in plugin_list:
             if plugin_name not in self.plugin_names:
                 self.plugin_names.append(plugin_name)
                 self.load_plugin(plugin_name)
         # remove plugins
         for plugin_name in self.plugins:
-            if plugin_name not in plugins:
+            if plugin_name not in plugin_list:
                 self.plugin_names.remove(plugin_name)
                 self.remove_plugin(plugin_name)
         
