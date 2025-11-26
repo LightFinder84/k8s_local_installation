@@ -43,10 +43,7 @@ def main():
             
             # apply plugin
             plugin_manager.update_plugins(etcd_agent.get_plugins())
-            plugin_manager.execute(metric_data)
-            
-            print("check check")
-            print(metric_data)
+            metric_data = plugin_manager.execute(metric_data)
             
             # send data
             grpc_agent.report(metric_data)

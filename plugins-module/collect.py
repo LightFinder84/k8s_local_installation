@@ -34,6 +34,7 @@ class DataCollector:
         return value
     
     def execute(self, metrics):
+        print(f"Collecting data with metrics: {metrics}")
         data = {}
         for metric in metrics:
             if metric == "cpu":
