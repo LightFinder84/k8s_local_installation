@@ -18,7 +18,7 @@ PRODUCE_TOPIC = "MONITOR-DATA"
 
 def main():
     try:
-        kafka_client = KafkaClient(PRODUCE_TOPIC, CONSUME_TOPIC, KAFKA_CONFIG_FILE)
+        kafka_client = KafkaClient(CONSUME_TOPIC, PRODUCE_TOPIC, KAFKA_CONFIG_FILE)
         grpc_server = GrpcServer(GRPC_MAX_WORKERS, kafka_client)
         grpc_server.startServer()
         
