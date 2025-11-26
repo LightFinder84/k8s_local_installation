@@ -2,6 +2,7 @@ import sys
 import time
 import traceback
 from grpc_server import GrpcServer
+from kafka_client import KafkaClient
 
 # -------------------------------------- CONFIGURATION --------------------------------------
 REQUIRED_ARGS_COUNT = 1
@@ -10,10 +11,13 @@ if len(sys.argv) != REQUIRED_ARGS_COUNT + 1:
     print(f"Incorrect argument. Usage: {sys.argv[0]} <GRPC_MAX_WORKERS>")
     
 GRPC_MAX_WORKERS = int(sys.argv[1])
+CONSUME_TOPIC = "ANALYSIS-COMMAND"
+PRODUCE_TOPIC = "MONITOR-DATA"
 
 def main():
     try:
-        grpc_server = GrpcServer(GRPC_MAX_WORKERS)
+        kafka_client = KafkaClient(PRODUCE_TOPIC, CONSUME_TOPIC, 'kafka-config.json')
+        grpc_server = GrpcServer(GRPC_MAX_WORKERS, kafka_client)
         grpc_server.startServer()
         
         while True:
@@ -23,6 +27,7 @@ def main():
         print(f"Exception occured: {e}")
         print(traceback.format_exc())
     finally:
+        kafka_client.finalize()
         grpc_server.finalize()
 
 if __name__ == "__main__":

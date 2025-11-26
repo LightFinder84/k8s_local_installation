@@ -1,0 +1,10 @@
+{
+    "consumer": {
+        "bootstrap.servers": "kafka-01:30092,kafka-02:30192,kafka-03:30292",
+        "group.id": "analysis-command",
+        "auto.offset.reset": "earliest"
+    },
+    "producer": {
+        "bootstrap.servers": "kafka-01:30092,kafka-02:30192,kafka-03:30292"
+    }
+}
