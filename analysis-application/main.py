@@ -1,5 +1,6 @@
 import sys
 import threading
+import time
 import traceback
 from kafka_client import KafkaClient
 
@@ -18,6 +19,9 @@ def main():
         kafka_client = KafkaClient(CONSUME_TOPIC, PRODUCE_TOPIC, CONFIG_PATH)
         consume_t = threading.Thread(target=kafka_client.consume, daemon=True)
         consume_t.start()
+        
+        while True:
+            time.sleep(1)
         
     except Exception as e:
         print(f"Exception occured: {e}")
