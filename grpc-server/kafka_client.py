@@ -53,6 +53,7 @@ class KafkaClient():
     
     def finalize(self):
         self.producer.flush()
+        self.consumer.close()
     
     
     

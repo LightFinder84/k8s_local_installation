@@ -45,6 +45,7 @@ class GrpcServer():
         self.max_workers = max_workers
         self.kafka_client = kafka_client
         self.server_t: threading.Thread = None
+        self.kafka_t: threading.Thread = None
         self.server = grpc.server(futures.ThreadPoolExecutor(max_workers=self.max_workers))
         monitoring_pb2_grpc.add_MonitorServicer_to_server(MonitorService(self.kafka_client), self.server)
         self.server.add_insecure_port("[::]:50051")
@@ -55,6 +56,9 @@ class GrpcServer():
         self.server.wait_for_termination()
         
     def startServer(self):
+        self.kafka_t = threading.Thread(target=self.kafka_client.consume, daemon=True)
+        self.kafka_t.start()
+        
         self.server_t = threading.Thread(target=self.serve, daemon=True)
         self.server_t.start()
         
