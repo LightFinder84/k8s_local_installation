@@ -41,7 +41,7 @@ class KafkaClient():
         self.producer.poll(0)
     
     def finalize(self):
-        producer.flush()
+        self.producer.flush()
     
     
     
