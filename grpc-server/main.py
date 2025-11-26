@@ -8,7 +8,7 @@ from kafka_client import KafkaClient
 REQUIRED_ARGS_COUNT = 2
 
 if len(sys.argv) != REQUIRED_ARGS_COUNT + 1:
-    print(f"Incorrect argument. Usage: {sys.argv[0]} <GRPC_MAX_WORKERS> <KAFKA_CONFIG_FILE>")
+    print(f"Incorrect argument.\nUsage: {sys.argv[0]} <GRPC_MAX_WORKERS> <KAFKA_CONFIG_FILE>")
     sys.exit(1)
     
 GRPC_MAX_WORKERS = int(sys.argv[1])
