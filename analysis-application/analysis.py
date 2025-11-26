@@ -2,6 +2,7 @@
 class Analysis():
     
     def run(self, data):
+        print(f"Running ananlysis with data: {data}")
         if data['metric'] == 'cpu' and float(data['value']) > 50:
             return {
                 "hostname": data['hostname'],
