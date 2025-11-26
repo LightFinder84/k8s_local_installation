@@ -1,8 +1,7 @@
 import grpc
+import threading
 from grpc_stub import monitoring_pb2, monitoring_pb2_grpc
 from concurrent import futures
-
-CPU_THRESH_HOLD = 60
 
 class MonitorService(monitoring_pb2_grpc.MonitorServicer):
     def monitor(self, request_iterator, context):
@@ -33,19 +32,29 @@ class MonitorService(monitoring_pb2_grpc.MonitorServicer):
                 print(f"Original command type: {request.command_result.original_command.command_type}")
                 print(f"Success: {request.command_result.success}")
                 print(f"Output:\n{request.command_result.output}")
-            
-def serve():
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=3))
-    monitoring_pb2_grpc.add_MonitorServicer_to_server(MonitorService(), server)
-    server.add_insecure_port("[::]:50051")
-    
-    server.start()
-    print("gRPC server running on: 50051")
-    try:
-        server.wait_for_termination()
-    except KeyboardInterrupt:
-        print("Shutting down...")
+                
+class GrpcServer():
+    def __init__(self, max_workers):
+        self.max_workers = max_workers
+        self.server_t: threading.Thread = None
+        self.server = grpc.server(futures.ThreadPoolExecutor(max_workers=self.max_workers))
+        monitoring_pb2_grpc.add_MonitorServicer_to_server(MonitorService(), self.server)
+        self.server.add_insecure_port("[::]:50051")
         
-if __name__ == "__main__":
-    serve()
+    def serve(self):
+        self.server.start()
+        print("gRPC server running on: 50051")
+        self.server.wait_for_termination()
+        
+    def startServer(self):
+        self.server_t = threading.Thread(target=self.serve, daemon=True)
+        self.server_t.start()
+        
+    def finalize(self):
+        print("Shutting down GRPC server...")
+        self.server.stop(5)
+        self.server_t.join(timeout=1)
+
+            
+
     
