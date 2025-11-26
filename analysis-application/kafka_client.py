@@ -33,17 +33,6 @@ class KafkaClient():
         self.consumer.subscribe([self.consume_topic])
         self.analysis = Analysis()
         
-    def produce(self, data):
-        print(f"Producing data")
-        value = {
-            "time": data.time,
-            "hostname": data.hostname,
-            "metric": data.metric,
-            "value": data.value
-        }
-        self.producer.produce(self.produce_topic, data.hostname, json.dumps(value).encode('utf-8'))
-        self.producer.poll(0)
-        
     def consume(self):
         while True:
             msg = self.consumer.poll(1.0)
