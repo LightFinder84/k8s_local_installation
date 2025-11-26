@@ -1,3 +1,6 @@
+venv
+*/venv
 etcd-client-venv
 grpc-client-venv
 kafka-client-venv
+*/__pycache__
