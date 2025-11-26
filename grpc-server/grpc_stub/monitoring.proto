@@ -1,0 +1,37 @@
+syntax="proto3";
+package monitoring;
+
+service Monitor {
+    rpc monitor (stream ClientStream) returns (stream CommandRequest) {}
+}
+
+message ClientStream {
+    oneof content {
+        MonitorData monitor_data = 1;
+        CommandResult command_result = 2;
+    }
+}
+
+message MonitorData {
+    string time = 1;
+    string hostname = 2;
+    string metric = 3;
+    string value = 4;
+}
+
+message CommandRequest {
+    enum CommandType {
+        UNKNOWN = 0;
+        SET_INTERVAL = 1;
+    }
+
+    CommandType command_type = 1;
+    string parameter = 2;
+}
+
+message CommandResult {
+    string hostname = 1;
+    CommandRequest original_command = 2;
+    string output = 3;
+    bool success = 4;
+}
