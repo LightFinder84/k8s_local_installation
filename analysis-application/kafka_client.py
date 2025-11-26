@@ -45,10 +45,11 @@ class KafkaClient():
             print(msg.value().decode('utf-8'))
             data = json.loads(msg.value().decode('utf-8'))
             command = self.analysis.run(data=data)
-            if command:
+            if not command is None:
                 self.produce(data)
             
     def produce(self, data):
+        print(f"producing data: {data}")
         self.producer.produce(self.produce_topic, value=json.dumps(data).encode('utf-8'), key=data['hostname'])
         self.producer.poll(0)
     
