@@ -41,9 +41,9 @@ class EtcdAgent:
                 with self.config_lock:
                     self.config_value = {
                         "interval": 5,
-                        "metrics": ['cpu', 'mem'],
+                        "metrics": ['cpu', 'mem', 'disk_read', 'disk_write', 'net_in', 'net_out'],
                         "plugins": [],
-                        "available-plugins": ["one", "two", "there"],
+                        "available-plugins": ["plugin.hello.HelloPlugin", "plugin.dedup.DeDupPlugin"],
                         "node-id": socket.gethostname()
                     }
                     print(f"Initial config value is not set. Proceeding with default value:\n{self.config_value}")
