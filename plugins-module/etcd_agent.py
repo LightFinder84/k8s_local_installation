@@ -102,7 +102,7 @@ class EtcdAgent:
             with self.config_lock:
                 self.config_value.interval = value
         except Exception as e:
-            print("Interval value must be a number.")
+            print(f"Interval value {value} must be a number.")
             raise e
         
         try:

@@ -71,7 +71,7 @@ class GrpcAgent:
                     elif command.command_type == monitoring_pb2.CommandRequest.CommandType.SET_INTERVAL:
                         interval_value = command.parameter
                         output, success = None, True
-                        print("Received command: SET_INTERVAL {command.parameter}")
+                        print(f"Received command: SET_INTERVAL {command.parameter}")
                         try:
                             etcd_agent.set_interval(interval_value)
                         except Exception as e:
