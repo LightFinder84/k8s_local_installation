@@ -75,7 +75,12 @@ class EtcdAgent:
                         "interval": 5,
                         "metrics": ['cpu', 'mem', 'disk_read', 'disk_write', 'net_in', 'net_out'],
                         "plugins": [],
-                        "available-plugins": ["plugin.hello.HelloPlugin", "plugin.dedup.DeDupPlugin", "plugin.filter.FilterNet"],
+                        "available-plugins": [
+                            "plugin.hello.HelloPlugin", 
+                            "plugin.dedup.DeDupPlugin", 
+                            "plugin.filter.FilterNet",
+                            "plugin.filter.FilterDisk"
+                        ],
                         "node-id": socket.gethostname()
                     }
                     print(f"Initial config value is not set. Proceeding with default value:\n{self.config_value}")

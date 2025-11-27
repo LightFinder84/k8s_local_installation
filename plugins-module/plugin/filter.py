@@ -17,3 +17,21 @@ class FilterNet(BasePlugin):
     def finalize(self):
         self.prev_data = None
         print("[FilterNet Plugin] finalized")
+        
+class FilterDisk(BasePlugin):
+    def initialize(self):
+        self.prev_data = None
+        print("[FilterDisk Plugin] initialized")
+        
+    def run(self, data):
+        print("[FilterDisk Plugin] running!")
+        if 'disk_read' in data:
+            del data['disk_read']
+        if 'disk_write' in data:
+            del data['disk_write']
+        
+        return data
+        
+    def finalize(self):
+        self.prev_data = None
+        print("[FilterDisk Plugin] finalized")
