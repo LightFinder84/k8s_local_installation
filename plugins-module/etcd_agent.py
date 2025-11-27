@@ -112,3 +112,5 @@ class EtcdAgent:
         except Exception as e:
             print("Error update config value to gRPC server")
             raise e
+        
+        print(f"Updated new interval value: {value}")

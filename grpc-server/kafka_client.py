@@ -64,7 +64,7 @@ class KafkaClient():
                 value = msg.value()
                 
             print(f"Received command for {key}")
-            self.command_queue.put(value)
+            self.command_queue.put(json.loads(value))
         
     def produce(self, data):
         print(f"Producing data")

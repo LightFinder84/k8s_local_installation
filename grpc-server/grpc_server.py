@@ -22,23 +22,18 @@ class MonitorService(monitoring_pb2_grpc.MonitorServicer):
                 self.kafka_client.produce(request.monitor_data)
                 
                 # Analyze monitoring data
-                command_request = None
-                command_type = monitoring_pb2.CommandRequest.CommandType.UNKNOWN
-                parameter = ""
-                
+                kafka_command = None
                 try:
-                    command_request = self.command_queue.get_nowait()
+                    kafka_command = self.command_queue.get_nowait()
                 except:
                     pass
                 
                 # send command
-                if command_request:
-                    print("\n=== SENDING COMMAND REQUEST ===")
-                    print(command_request)
-                    # print(f"Target host: {request.monitor_data.hostname}")
-                    # print(f"Command type: {command_type}")
-                    # print(f"Parameter: {parameter}")
-                    # yield command_request
+                if kafka_command:
+                    print("Sending command request")
+                    command_type = monitoring_pb2.CommandRequest.CommandType.SET_INTERVAL
+                    command_request = monitoring_pb2.CommandRequest(command_type=command_type, parameter=command_request['parameter'])
+                    yield command_request
                 
                 
 class GrpcServer():
