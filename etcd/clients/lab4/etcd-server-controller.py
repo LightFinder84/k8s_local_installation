@@ -29,17 +29,37 @@ except Exception as e:
 # -------------------------------- Heartbeat --------------------------------
 
 def get_nodes_list():
-    results = etcd.get_prefix(HEARTBEAT_PREFIX)
-    nodes = []
+    """
+    Retrieves the list of active hostnames by scanning the HEARTBEAT_PREFIX.
+    Extracts the 'node-id' from the heartbeat data.
+    """
+    nodes = set() # Use a set to automatically handle duplicates
+    
+    # etcd.get_prefix returns an iterable of (value, metadata) tuples
     try:
-        while True:
-            result, _ = next(results)
-            nodes.append(json.loads(result.decode('utf-8'))['node-id'])
-    except StopIteration:
-        pass
-    # print(len(results))
-    # nodes = [json.loads(result.decode('utf-8'))['node-id'] for result, _ in results]
-    return nodes
+        # NOTE: etcd3.get_prefix returns all results at once (if the key range is small)
+        # Using a for-loop is safer than the next(results) while loop pattern.
+        for value, metadata in etcd.get_prefix(HEARTBEAT_PREFIX):
+            if value:
+                try:
+                    heartbeat_data = json.loads(value.decode('utf-8'))
+                    # The node-id is the hostname
+                    if 'node-id' in heartbeat_data:
+                        nodes.add(heartbeat_data['node-id'])
+                    else:
+                        # Fallback: Extract hostname from the key if 'node-id' is missing
+                        key = metadata.key.decode('utf-8')
+                        hostname = key.replace(HEARTBEAT_PREFIX, '')
+                        if hostname:
+                             nodes.add(hostname)
+                except json.JSONDecodeError:
+                    print(f"Warning: Heartbeat data at key {metadata.key.decode('utf-8')} is not valid JSON.")
+        
+    except Exception as e:
+        print(f"Error retrieving heartbeats: {e}")
+        return []
+    
+    return sorted(list(nodes))
 
 def config_controller_main():
     print("\n--- Configuration Controller Active ---")
