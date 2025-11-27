@@ -23,6 +23,7 @@ class PluginManager:
             print(f"Load plugin: {plugin_name}")
             plugin = plugin_cls()
             plugin.initialize()
+            self.plugins.append(plugin)
         
     def remove_plugin(self, plugin_name):
         print(f"try to remove plugin {plugin_name}")
