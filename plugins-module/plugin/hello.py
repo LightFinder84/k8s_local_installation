@@ -6,6 +6,7 @@ class HelloPlugin(BasePlugin):
         
     def run(self, data):
         print("[HelloPlugin] run... Hello!")
+        return data
         
     def finalize(self):
         print("[HelloPlugin] finalized")
