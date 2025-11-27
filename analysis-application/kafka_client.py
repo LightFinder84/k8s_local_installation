@@ -43,14 +43,11 @@ class KafkaClient():
                 break
             print(f"Received message")
             # print(f"Received message: {msg.key().decode('utf-8')} from {msg.topic()} [{msg.partition()}] at offset {msg.offset()}")
-            print(msg.value().decode('utf-8'))
+            # print(msg.value().decode('utf-8'))
             data = json.loads(msg.value().decode('utf-8'))
             command = self.analysis.run(data=data)
             if not command is None:
-                print("hey wtf")
                 self.produce(command)
-            else:
-                print("kidding me?")
             
     def produce(self, command):
         print(f"producing command at topic {self.produce_topic}")

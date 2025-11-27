@@ -1,6 +1,7 @@
 import sys
 import time
 import traceback
+import threading
 from grpc_server import GrpcServer
 from kafka_client import KafkaClient
 
@@ -21,6 +22,9 @@ def main():
         kafka_client = KafkaClient(CONSUME_TOPIC, PRODUCE_TOPIC, KAFKA_CONFIG_FILE)
         grpc_server = GrpcServer(GRPC_MAX_WORKERS, kafka_client)
         grpc_server.startServer()
+        
+        kafka_consume_t = threading.Thread(target=kafka_client.consume, daemon=True)
+        kafka_consume_t.start()
         
         while True:
             time.sleep(1)
