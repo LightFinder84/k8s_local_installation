@@ -43,14 +43,14 @@ class KafkaClient():
                 break
             
             data = json.loads(msg.value().decode('utf-8'))
-            print(f"\n[ANALYSIS - Received]\nReceived monitor data from topic {self.consume_topic}. Source Agent: {data['hostname']}")
+            print(f"\n[KAFKA({self.consume_topic}) -> ANALYSIS]\n    Source Agent: {data['hostname']}\n    {data['metric']}: {data['value']}")
             
             command = self.analysis.run(data=data)
             if not command is None:
                 self.produce(command)
             
     def produce(self, command):
-        print(f"\n[ANALYSIS - Send]\nSending command to topic {self.produce_topic}. Target Agent: {command['hostname']}")
+        print(f"\n[ANALYSIS -> KAFKA({self.produce_topic})]\n    Target Agent: {command['hostname']}\n    Command: SET_INTERVAL {command['parameter']}")
         self.producer.produce(self.produce_topic, value=json.dumps(command).encode('utf-8'), key=command['hostname'])
         self.producer.poll(0)
     
