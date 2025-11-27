@@ -98,12 +98,11 @@ class EtcdAgent:
     
     def set_interval(self, value):
         try:
-            value = int(value)
+            new_interval = int(value)
             with self.config_lock:
-                self.config_value.interval = value
+                self.config_value['interval'] = new_interval
         except Exception as e:
-            print(f"Interval value {value} must be a number.")
-            raise e
+            print(f"Error update new interval: {e}")
         
         try:
             with self.config_lock:
