@@ -11,6 +11,7 @@ from plugin_manager import PluginManager
 REQUIRED_ARGS = 5 # script_name host port
 NODE_HOSTNAME = socket.gethostname()
 CONFIG_KEY = f'/config/monitor/{NODE_HOSTNAME}'
+HEARTBEAT_KEY = f'/monitor/heartbeat/{NODE_HOSTNAME}'
 
 if len(sys.argv) != REQUIRED_ARGS:
     print(f"In correct argument.")
@@ -27,7 +28,7 @@ GRPC_PORT = int(sys.argv[4])
 def main():
     try:
         # connect to etcd
-        etcd_agent = EtcdAgent(ETCD_HOST, ETCD_PORT, CONFIG_KEY)
+        etcd_agent = EtcdAgent(ETCD_HOST, ETCD_PORT, CONFIG_KEY, HEARTBEAT_KEY)
         etcd_agent.start_config_watcher()
         # connect to grpc
         grpc_agent = GrpcAgent(GRPC_HOST, GRPC_PORT)

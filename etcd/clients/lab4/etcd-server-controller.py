@@ -17,6 +17,7 @@ except Exception:
     sys.exit(1)
     
 CONFIG_PREFIX = '/config/monitor/'
+HEARTBEAT_PREFIX = '/monitor/heartbeat/'
 
 try:
     etcd = etcd3.client(host=ETCD_HOST, port=ETCD_PORT)
@@ -28,7 +29,7 @@ except Exception as e:
 # -------------------------------- Heartbeat --------------------------------
 
 def get_nodes_list():
-    results = etcd.get_prefix(CONFIG_PREFIX)
+    results = etcd.get_prefix(HEARTBEAT_PREFIX)
     nodes = [json.loads(result.decode('utf-8'))['node-id'] for result, _ in results]
     return nodes
 

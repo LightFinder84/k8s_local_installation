@@ -2,14 +2,16 @@ import etcd3
 import threading
 import json
 import socket
+import time
 
 class EtcdAgent:
     
-    def __init__(self, host, port, config_key):
+    def __init__(self, host, port, config_key, heartbeat_key):
         self.host = host
         self.port = port
         self.etcd = None
         self.config_key = config_key
+        self.heartbeat_key = heartbeat_key
         self.config_value = {}
         self.config_lock = threading.Lock()
         
@@ -28,6 +30,36 @@ class EtcdAgent:
         except Exception as e:
             print(f"Error connecting to etcd.")
             raise e
+        
+    def send_heartbeat_signal(self):
+        LEASE_TTL = 10
+        lease = self.etcd.lease(LEASE_TTL)
+        print(f"Starting heartbeat thread. TTL: {LEASE_TTL}s, Lease ID: {lease.id}")
+        refresh_interval = LEASE_TTL / 2
+        
+        try:
+            # Loop
+            while True:
+                # send hearbeat data
+                heartbeat_data = json.dumps({
+                    'ts': int(time.time()),
+                    'node-id': socket.gethostname(),
+                })
+                self.etcd.put(self.heartbeat_key, heartbeat_data, lease=lease)
+                
+                # refresh lease
+                lease.refresh()
+                
+                # sleep
+                time.sleep(refresh_interval)
+                
+        except Exception as e:
+            print(f'Error sending heartbeat data: {e}')
+        finally:
+            # Revoke the lease on clean shutdown (optional, but good practice)
+            if 'lease' in locals():
+                lease.revoke()
+            print(f'Heartbeat stopped for node {socket.gethostname()}')
         
     def initialize_configuration(self):
         try:
@@ -70,6 +102,9 @@ class EtcdAgent:
             raise e
         
     def start_config_watcher(self):
+        heartbeat_t = threading.Thread(target=self.send_heartbeat_signal, daemon=True)
+        heartbeat_t.start()
+        
         config_watcher_t = threading.Thread(target=self.setup_config_watcher, daemon=True)
         config_watcher_t.start()
         
