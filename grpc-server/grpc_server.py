@@ -1,13 +1,15 @@
 import grpc
 import threading
+import queue
 from grpc_stub import monitoring_pb2, monitoring_pb2_grpc
 from concurrent import futures
 from kafka_client import KafkaClient
 
 class MonitorService(monitoring_pb2_grpc.MonitorServicer):
 
-    def __init__(self, kafka_client: KafkaClient):
+    def __init__(self, kafka_client: KafkaClient, command_queue: queue.Queue):
         self.kafka_client = kafka_client
+        self.command_queue = command_queue
     
     def monitor(self, request_iterator, context):
         for request in request_iterator:
@@ -24,20 +26,20 @@ class MonitorService(monitoring_pb2_grpc.MonitorServicer):
                 command_type = monitoring_pb2.CommandRequest.CommandType.UNKNOWN
                 parameter = ""
                 
+                try:
+                    command_request = self.command_queue.get_nowait()
+                except:
+                    pass
+                
                 # send command
                 if command_request:
                     print("\n=== SENDING COMMAND REQUEST ===")
-                    print(f"Target host: {request.monitor_data.hostname}")
-                    print(f"Command type: {command_type}")
-                    print(f"Parameter: {parameter}")
-                    yield command_request
+                    print(command_request)
+                    # print(f"Target host: {request.monitor_data.hostname}")
+                    # print(f"Command type: {command_type}")
+                    # print(f"Parameter: {parameter}")
+                    # yield command_request
                 
-            elif request.HasField('command_result'):
-                print("\n=================== RECIEVE COMMAND RESULT ============================")
-                print(f"Hostname: {request.command_result.hostname}")
-                print(f"Original command type: {request.command_result.original_command.command_type}")
-                print(f"Success: {request.command_result.success}")
-                print(f"Output:\n{request.command_result.output}")
                 
 class GrpcServer():
     def __init__(self, max_workers, kafka_client: KafkaClient):

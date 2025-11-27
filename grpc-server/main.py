@@ -1,7 +1,7 @@
 import sys
 import time
 import traceback
-import threading
+import queue
 from grpc_server import GrpcServer
 from kafka_client import KafkaClient
 
@@ -19,8 +19,9 @@ PRODUCE_TOPIC = "MONITOR-DATA"
 
 def main():
     try:
-        kafka_client = KafkaClient(CONSUME_TOPIC, PRODUCE_TOPIC, KAFKA_CONFIG_FILE)
-        grpc_server = GrpcServer(GRPC_MAX_WORKERS, kafka_client)
+        command_queue = queue.Queue()
+        kafka_client = KafkaClient(CONSUME_TOPIC, PRODUCE_TOPIC, KAFKA_CONFIG_FILE, command_queue)
+        grpc_server = GrpcServer(GRPC_MAX_WORKERS, kafka_client, command_queue)
         grpc_server.startServer()
         
         while True:

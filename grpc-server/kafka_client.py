@@ -1,4 +1,5 @@
 import json
+import queue
 from confluent_kafka import Producer, Consumer, KafkaError
 
 
@@ -23,10 +24,11 @@ def read_json_file(filename):
 # Consume command data
 class KafkaClient():
     
-    def __init__(self, consume_topic, produce_topic, config_path):
+    def __init__(self, consume_topic, produce_topic, config_path, command_queue: queue.Queue):
         self.consume_topic = consume_topic
         self.produce_topic = produce_topic
         self.config = read_json_file(config_path)
+        self.command_queue = command_queue
         self.producer = Producer(self.config['producer'])
         self.consumer = Consumer(self.config['consumer'])
         # Subscribe to the consume topic so poll() will return messages
@@ -60,8 +62,9 @@ class KafkaClient():
                 value = msg.value().decode('utf-8') if msg.value() is not None else None
             except Exception:
                 value = msg.value()
-
+                
             print(f"Received command for {key}")
+            self.command_queue.put(value)
         
     def produce(self, data):
         print(f"Producing data")
