@@ -55,8 +55,8 @@ class GrpcServer():
         self.server.wait_for_termination()
         
     def startServer(self):
-        # self.kafka_t = threading.Thread(target=self.kafka_client.consume, daemon=True)
-        # self.kafka_t.start()
+        self.kafka_t = threading.Thread(target=self.kafka_client.consume, daemon=True)
+        self.kafka_t.start()
         
         self.server_t = threading.Thread(target=self.serve, daemon=True)
         self.server_t.start()

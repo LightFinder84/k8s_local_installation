@@ -61,7 +61,7 @@ class KafkaClient():
             except Exception:
                 value = msg.value()
 
-            print(f"Received command: {key} from {msg.topic()} [{msg.partition()}] at offset {msg.offset()} -> {value}")
+            print(f"Received command for {key}")
         
     def produce(self, data):
         print(f"Producing data")

@@ -23,9 +23,6 @@ def main():
         grpc_server = GrpcServer(GRPC_MAX_WORKERS, kafka_client)
         grpc_server.startServer()
         
-        kafka_consume_t = threading.Thread(target=kafka_client.consume, daemon=True)
-        kafka_consume_t.start()
-        
         while True:
             time.sleep(1)
         
