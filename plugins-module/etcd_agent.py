@@ -54,7 +54,7 @@ class EtcdAgent:
         
     def config_change_handler(self, watch_response):
         for event in watch_response.events:
-            value = event.value.decode('utf-8')
+            value = json.loads(event.value.decode('utf-8'))
             if isinstance(event, etcd3.events.PutEvent):
                 if value != self.config_value:
                     with self.config_lock:
