@@ -25,8 +25,11 @@ class PluginManager:
             plugin.initialize()
         
     def remove_plugin(self, plugin_name):
+        print(f"try to remove plugin {plugin_name}")
         module_name, class_name = plugin_name.rsplit(".", 1)
+        print(f"classname: {class_name}")
         for plugin in self.plugins:
+            print(f"plugin.classname: {plugin.classname}")
             if plugin.classname == class_name:
                 print(f"Remove plugin: {plugin_name}")
                 plugin.finalize()
