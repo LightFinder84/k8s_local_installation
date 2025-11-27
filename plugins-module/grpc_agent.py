@@ -33,7 +33,7 @@ class GrpcAgent:
             time.sleep(0.1)
         
     def report(self, data):
-        print(f"Report data: {data}")
+        print(f"Report data...")
         local_time_string = time.ctime(time.time())
         if 'cpu' in data:
             data_template =  monitoring_pb2.MonitorData(time=local_time_string, hostname=socket.gethostname(), metric="cpu", value=data['cpu'])
