@@ -30,6 +30,7 @@ except Exception as e:
 
 def get_nodes_list():
     results = etcd.get_prefix(HEARTBEAT_PREFIX)
+    print(len(results))
     nodes = [json.loads(result.decode('utf-8'))['node-id'] for result, _ in results]
     return nodes
 
