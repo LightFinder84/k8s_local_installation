@@ -67,7 +67,7 @@ class KafkaClient():
             self.command_queue.put(json.loads(value))
         
     def produce(self, data):
-        print(f"\n[GRPC-SERVER]\nSending monitor data to topic {self.produce_topic}. Source Agent: {data.hostname}")
+        print(f"\n[GRPC-SERVER - Send]\nSending monitor data to topic {self.produce_topic}. Source Agent: {data.hostname}")
         value = {
             "time": data.time,
             "hostname": data.hostname,

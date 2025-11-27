@@ -19,6 +19,8 @@ class MonitorService(monitoring_pb2_grpc.MonitorServicer):
                 # print(f"Metric: {request.monitor_data.metric}")
                 # print(f"Value: {request.monitor_data.value}")
                 
+                print(f"[{request.monitor_data.hostname} -> GRPC-SERVER]")
+                
                 self.kafka_client.produce(request.monitor_data)
                 
                 # Analyze monitoring data
@@ -30,7 +32,7 @@ class MonitorService(monitoring_pb2_grpc.MonitorServicer):
                 
                 # send command
                 if kafka_command:
-                    print("Sending command request")
+                    print(f"\n[GRPC-SERVER -> {kafka_command['hostname']}]")
                     command_type = monitoring_pb2.CommandRequest.CommandType.SET_INTERVAL
                     command_request = monitoring_pb2.CommandRequest(command_type=command_type, parameter=str(kafka_command['parameter']))
                     yield command_request
