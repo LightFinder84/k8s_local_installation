@@ -25,14 +25,13 @@ class PluginManager:
             plugin.initialize()
             self.plugins.append(plugin)
         
-    def remove_plugin(self, plugin_name):
-        print(f"try to remove plugin {plugin_name}")
-        module_name, class_name = plugin_name.rsplit(".", 1)
-        print(f"classname: {class_name}")
+    def remove_plugin(self, plugin_fullname):
+        module_name, class_name = plugin_fullname.rsplit(".", 1)
         for plugin in self.plugins:
-            print(f"plugin.classname: {plugin.classname}")
-            if plugin.classname == class_name:
-                print(f"Remove plugin: {plugin_name}")
+            plugin_module = plugin.__class__.__module__
+            plugin_name = plugin.__class__.__name__
+            if plugin_name == class_name and plugin_module == module_name:
+                print(f"Remove plugin: {plugin_fullname}")
                 plugin.finalize()
                 self.plugins.remove(plugin)
                 
