@@ -44,7 +44,7 @@ class EtcdAgent:
                 heartbeat_data = json.dumps({
                     'ts': int(time.time()),
                     'node-id': socket.gethostname(),
-                })
+                }).encode('utf-8')
                 self.etcd.put(self.heartbeat_key, heartbeat_data, lease=lease)
                 
                 # refresh lease
