@@ -30,8 +30,14 @@ except Exception as e:
 
 def get_nodes_list():
     results = etcd.get_prefix(HEARTBEAT_PREFIX)
-    print(len(results))
-    nodes = [json.loads(result.decode('utf-8'))['node-id'] for result, _ in results]
+    nodes = []
+    try:
+        result, _ = next(results)
+        nodes.append(json.loads(result.decode('utf-8'))['node-id'])
+    except StopIteration:
+        pass
+    # print(len(results))
+    # nodes = [json.loads(result.decode('utf-8'))['node-id'] for result, _ in results]
     return nodes
 
 def config_controller_main():
