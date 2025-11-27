@@ -33,6 +33,7 @@ class KafkaClient():
     def consume(self):
         print(f"Start consuming command at topic {self.consume_topic}")
         while True:
+            print('check for data')
             msg = self.consumer.poll(1.0)
             if msg is None:
                 continue
