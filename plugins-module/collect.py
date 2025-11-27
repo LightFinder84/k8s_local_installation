@@ -24,12 +24,12 @@ class DataCollector:
         return value
     
     def get_net_in(self):
-        command = "ifstat -i enp0s8 1 1 | awk 'NR>2 {print $1}'"
+        command = "ifstat -i ens5 1 1 | awk 'NR>2 {print $1}'"
         value = subprocess.run(command, shell=True, capture_output=True, text=True).stdout.strip()
         return value
     
     def get_net_out(self):
-        command = "ifstat -i enp0s8 1 1 | awk 'NR>2 {print $2}'"
+        command = "ifstat -i ens5 1 1 | awk 'NR>2 {print $2}'"
         value = subprocess.run(command, shell=True, capture_output=True, text=True).stdout.strip()
         return value
     
