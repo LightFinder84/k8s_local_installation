@@ -32,8 +32,9 @@ def get_nodes_list():
     results = etcd.get_prefix(HEARTBEAT_PREFIX)
     nodes = []
     try:
-        result, _ = next(results)
-        nodes.append(json.loads(result.decode('utf-8'))['node-id'])
+        while True:
+            result, _ = next(results)
+            nodes.append(json.loads(result.decode('utf-8'))['node-id'])
     except StopIteration:
         pass
     # print(len(results))
