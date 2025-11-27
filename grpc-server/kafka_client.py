@@ -67,7 +67,7 @@ class KafkaClient():
             self.command_queue.put(json.loads(value))
         
     def produce(self, data):
-        print(f"Producing data")
+        print(f"[GRPC-SERVER]\nSending monitor data to topic {self.produce_topic}. Source Agent: {data.hostname}")
         value = {
             "time": data.time,
             "hostname": data.hostname,
@@ -93,7 +93,7 @@ class KafkaClient():
         if err is not None:
             print(f"Delivery failed for message {msg.key()}: {err}")
         else:
-            print(f"Message delivered to {msg.topic()} [{msg.partition()}] at offset {msg.offset()}")
+            print("Message delivered.")
     
     def finalize(self):
         self.producer.flush()

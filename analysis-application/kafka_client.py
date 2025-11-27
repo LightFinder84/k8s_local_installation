@@ -41,16 +41,16 @@ class KafkaClient():
             if msg.error():
                 print(f"Error consuming data: {msg.error()}")
                 break
-            print(f"Received message")
-            # print(f"Received message: {msg.key().decode('utf-8')} from {msg.topic()} [{msg.partition()}] at offset {msg.offset()}")
-            # print(msg.value().decode('utf-8'))
+            
             data = json.loads(msg.value().decode('utf-8'))
+            print(f"[ANALYSIS]\nReceived monitor data from topic {self.consume_topic}. Source Agent: {data['hostname']}")
+            
             command = self.analysis.run(data=data)
             if not command is None:
                 self.produce(command)
             
     def produce(self, command):
-        print(f"producing command at topic {self.produce_topic}")
+        print(f"[ANALYSIS]\nSending command to topic {self.produce_topic}. Target Agent: {command['hostname']}")
         self.producer.produce(self.produce_topic, value=json.dumps(command).encode('utf-8'), key=command['hostname'])
         self.producer.poll(0)
     
