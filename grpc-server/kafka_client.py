@@ -1,5 +1,5 @@
 import json
-from confluent_kafka import Producer, Consumer
+from confluent_kafka import Producer, Consumer, KafkaError
 
 
 def read_json_file(filename):
@@ -29,18 +29,39 @@ class KafkaClient():
         self.config = read_json_file(config_path)
         self.producer = Producer(self.config['producer'])
         self.consumer = Consumer(self.config['consumer'])
+        # Subscribe to the consume topic so poll() will return messages
+        try:
+            self.consumer.subscribe([self.consume_topic])
+            print(f"Subscribed consumer to topic: {self.consume_topic}")
+        except Exception as e:
+            print(f"Failed to subscribe consumer to topic {self.consume_topic}: {e}")
         
     def consume(self):
         print(f"Start consuming command at topic {self.consume_topic}")
         while True:
-            print('check for data')
             msg = self.consumer.poll(1.0)
             if msg is None:
                 continue
             if msg.error():
+                # Ignore EOF notifications -- continue polling
+                if msg.error().code() == KafkaError._PARTITION_EOF:
+                    continue
                 print(f"Error consuming data: {msg.error()}")
-                break
-            print(f"Received command: {msg.key().decode('utf-8')} from {msg.topic()} [{msg.partition()}] at offset {msg.offset()}")
+                # continue rather than break so consumer keeps running
+                continue
+
+            # Safely decode key and value
+            try:
+                key = msg.key().decode('utf-8') if msg.key() is not None else None
+            except Exception:
+                key = msg.key()
+
+            try:
+                value = msg.value().decode('utf-8') if msg.value() is not None else None
+            except Exception:
+                value = msg.value()
+
+            print(f"Received command: {key} from {msg.topic()} [{msg.partition()}] at offset {msg.offset()} -> {value}")
         
     def produce(self, data):
         print(f"Producing data")
@@ -50,8 +71,26 @@ class KafkaClient():
             "metric": data.metric,
             "value": data.value
         }
-        self.producer.produce(self.produce_topic, value=json.dumps(value).encode('utf-8'), key=data.hostname)
-        self.producer.poll(0)
+        # Use delivery callback to get confirmation/errors
+        try:
+            self.producer.produce(
+                self.produce_topic,
+                value=json.dumps(value).encode('utf-8'),
+                key=str(data.hostname),
+                callback=self.delivery_report
+            )
+            # trigger delivery callbacks
+            self.producer.poll(0)
+        except BufferError as e:
+            print(f"Local producer queue is full ({e}); try again")
+        except Exception as e:
+            print(f"Failed to produce message: {e}")
+
+    def delivery_report(self, err, msg):
+        if err is not None:
+            print(f"Delivery failed for message {msg.key()}: {err}")
+        else:
+            print(f"Message delivered to {msg.topic()} [{msg.partition()}] at offset {msg.offset()}")
     
     def finalize(self):
         self.producer.flush()
