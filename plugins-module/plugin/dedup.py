@@ -13,6 +13,8 @@ class DeDupPlugin(BasePlugin):
         else:
             data['send'] = False
         
+        return data
+        
     def finalize(self):
         self.prev_data = None
         print("[DeDupPlugin] finalized")
