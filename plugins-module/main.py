@@ -47,7 +47,10 @@ def main():
             metric_data = plugin_manager.execute(metric_data)
             
             # send data
-            if metric_data['send'] is True:
+            if 'send' in metric_data:
+                if metric_data['send'] is True:
+                    grpc_agent.report(metric_data)
+            else:
                 grpc_agent.report(metric_data)
             
             time.sleep(etcd_agent.get_interval()) 
