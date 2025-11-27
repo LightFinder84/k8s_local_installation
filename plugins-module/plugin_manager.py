@@ -12,7 +12,7 @@ class PluginManager:
                 self.plugin_names.append(plugin_name)
                 self.load_plugin(plugin_name)
         # remove plugins
-        for plugin_name in self.plugins:
+        for class_name in [x.classname for x in self.plugins]:
             if plugin_name not in plugin_list:
                 self.plugin_names.remove(plugin_name)
                 self.remove_plugin(plugin_name)
