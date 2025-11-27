@@ -73,13 +73,15 @@ class GrpcAgent:
                         output, success = None, True
                         print(f"Received command: SET_INTERVAL {command.parameter}")
                         try:
-                            etcd_agent.set_interval(interval_value)
+                            if interval_value != str(etcd_agent.get_config()['interval']):
+                                etcd_agent.set_interval(interval_value)
                         except Exception as e:
                             success = False
                             output = str(e)
-                        command_response_queue.put(
-                            monitoring_pb2.CommandResult(hostname=socket.gethostname(), original_command=command, output=output, success=success)
-                        )
+                            
+                        # command_response_queue.put(
+                        #     monitoring_pb2.CommandResult(hostname=socket.gethostname(), original_command=command, output=output, success=success)
+                        # )
                     
             except grpc.RpcError as e:
                 if e.code() == grpc.StatusCode.UNAVAILABLE:
