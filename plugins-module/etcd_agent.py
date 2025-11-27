@@ -102,12 +102,11 @@ class EtcdAgent:
             with self.config_lock:
                 self.config_value['interval'] = new_interval
         except Exception as e:
-            print(f"Error update new interval: {e}")
+            print(f"Error update new local interval: {e}")
         
         try:
             with self.config_lock:
-                print(f"Update interval value: {value}")
-                self.etcd.put(self.config_key, json.dumps(self.config_value)).encode('utf-8')
+                self.etcd.put(self.config_key, json.dumps(self.config_value).encode('utf-8'))
         except Exception as e:
             print("Error update config value to gRPC server")
             raise e
