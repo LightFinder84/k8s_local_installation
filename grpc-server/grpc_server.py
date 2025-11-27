@@ -42,13 +42,13 @@ class MonitorService(monitoring_pb2_grpc.MonitorServicer):
                 
                 
 class GrpcServer():
-    def __init__(self, max_workers, kafka_client: KafkaClient):
+    def __init__(self, max_workers, kafka_client: KafkaClient, command_queue: queue.Queue):
         self.max_workers = max_workers
         self.kafka_client = kafka_client
         self.server_t: threading.Thread = None
         self.kafka_t: threading.Thread = None
         self.server = grpc.server(futures.ThreadPoolExecutor(max_workers=self.max_workers))
-        monitoring_pb2_grpc.add_MonitorServicer_to_server(MonitorService(self.kafka_client), self.server)
+        monitoring_pb2_grpc.add_MonitorServicer_to_server(MonitorService(self.kafka_client, command_queue), self.server)
         self.server.add_insecure_port("[::]:50051")
         
     def serve(self):
