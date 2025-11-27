@@ -32,7 +32,7 @@ class MonitorService(monitoring_pb2_grpc.MonitorServicer):
                 if kafka_command:
                     print("Sending command request")
                     command_type = monitoring_pb2.CommandRequest.CommandType.SET_INTERVAL
-                    command_request = monitoring_pb2.CommandRequest(command_type=command_type, parameter=kafka_command['parameter'])
+                    command_request = monitoring_pb2.CommandRequest(command_type=command_type, parameter=str(kafka_command['parameter']))
                     yield command_request
                 
                 
