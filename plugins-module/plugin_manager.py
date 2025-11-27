@@ -43,6 +43,6 @@ class PluginManager:
     
     def execute(self, data):
         for plugin in self.plugins:
-            print(f"Running plugin {plugin.classname}")
+            print(f"Running plugin {type(plugin).__name__}")
             data = plugin.run(data)
         return data
