@@ -63,11 +63,11 @@ class KafkaClient():
             except Exception:
                 value = msg.value()
                 
-            print(f"Received command for {key}")
+            print(f"\n[KAFKA({self.consume_topic}) -> GRPC-SERVER]")
             self.command_queue.put(json.loads(value))
         
     def produce(self, data):
-        print(f"\n[GRPC-SERVER - Send]\nSending monitor data to topic {self.produce_topic}. Source Agent: {data.hostname}")
+        print(f"\n[GRPC-SERVER -> KAFKA({self.produce_topic})]")
         value = {
             "time": data.time,
             "hostname": data.hostname,

@@ -19,7 +19,7 @@ class MonitorService(monitoring_pb2_grpc.MonitorServicer):
                 # print(f"Metric: {request.monitor_data.metric}")
                 # print(f"Value: {request.monitor_data.value}")
                 
-                print(f"[{request.monitor_data.hostname} -> GRPC-SERVER]")
+                print(f"\n[{request.monitor_data.hostname} -> GRPC-SERVER]")
                 
                 self.kafka_client.produce(request.monitor_data)
                 
