@@ -113,11 +113,11 @@ sudo systemctl restart kubelet
 # JOIN NODE
 if [ -z "$KEYPAIR" ]; then
     # missing keypair
-    scp ${MASTER_USER}@${MASTER_NODE_IP}:/home/${MASTER_USER}/k8s_local_installation/k8s/token.sh ./token.sh
+    scp ${MASTER_USER}@${MASTER_NODE_IP}:/home/${MASTER_USER}/k8s/token.sh ./token.sh
 else
     # has keypair
     chmod 400 ${KEYPAIR}
-    scp -i ${KEYPAIR} ${MASTER_USER}@${MASTER_NODE_IP}:/home/${MASTER_USER}/k8s_local_installation/k8s/token.sh ./token.sh
+    scp -i ${KEYPAIR} ${MASTER_USER}@${MASTER_NODE_IP}:/home/${MASTER_USER}/k8s/token.sh ./token.sh
 fi
 
 sudo sed -i 's/kubeadm/sudo kubeadm/g' token.sh
