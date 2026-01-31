@@ -1,4 +1,4 @@
-# Installation scripts for Kuberntes
+# Installation scripts for Kuberntes and some other tools
 
 ## Table of Contents
 
